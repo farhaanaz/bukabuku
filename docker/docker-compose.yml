@@ -15,17 +15,17 @@ services:
     volumes:
       - wordpress_data:/var/www/html
 
-db: 
-  image: mysql:5.7
-  container_name: mysql
-  restart: always
-  environment:
-    MYSQL_DATABASE: wordpress
-    MYSQL_USER: wpuser
-    MYSQL_PASSWORD: wppassword
-    MYSQL_ROOT_PASSWORD: rootpassword
-  volumes:
-    - db_data:/var/lib/mysql
+  db: 
+    image: mysql:8.0.45
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
 
 volumes:
   wordpress_data:
