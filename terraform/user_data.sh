@@ -1,10 +1,14 @@
 #!/bin/bash
 
-sudo apt update
-sudo apt install docker.io -y
-sudo systemctl enable docker
-sudo systemctl start docker
+apt update -y
+apt install docker.io docker-compose git -y
+systemctl enable docker
+systemctl start docker
 
-sudo apt install docker-compose -y
+usermod -aG docker ubuntu
 
-sudo usermod -aG docker ubuntu
+cd /home/ubuntu
+git clone https://github.com/farhaanaz/bukabuku.git
+cd project/docker
+docker-compose up -d
+
