@@ -5,8 +5,8 @@ services:
     image: wordpress:latest
     container_name: bukabuku-wordpress
     restart: always
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wpuser
