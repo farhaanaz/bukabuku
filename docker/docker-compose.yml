@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   wordpress:
-    build: ./wordpress
+    image: wordpress:latest
     container_name: bukabuku-wordpress
     restart: always
     ports:
