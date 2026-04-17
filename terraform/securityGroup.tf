@@ -1,7 +1,12 @@
+data "aws_vpc" "default" {
+  default = true
+}
+
 resource "aws_security_group" "bukabuku_sg" {
   name        = "bukabuku-sg"
   description = "bukabuku-sg"
-
+  vpc_id = data.aws_vpc.default.id
+  
   tags = {
     Name = "bukabuku-sg"
   }
