@@ -9,6 +9,6 @@ usermod -aG docker ubuntu
 
 cd /home/ubuntu
 git clone https://github.com/farhaanaz/bukabuku.git
-cd project/docker
+cd bukabuku/docker
 docker-compose up -d
 
