@@ -2,7 +2,7 @@ resource "aws_instance" "bukabukuwebinstance" {
   ami                    = data.aws_ami.amiID.id
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.bukabuku.key_name
-  vpc_security_group_ids = [aws_security_group.bukabuku-sg.id]
+  vpc_security_group_ids = [aws_security_group.bukabuku_sg.id]
   availability_zone      = "us-east-1a"
 
   user_data = file("${path.module}/user_data.sh")
