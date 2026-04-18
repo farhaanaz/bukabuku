@@ -5,8 +5,8 @@ services:
     image: wordpress:latest
     container_name: bukabuku-wordpress
     restart: always
-    expose:
-      - "80"
+    depends_on:
+      - db
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wpuser
@@ -29,6 +29,7 @@ services:
     
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - "80:80"
     volumes:
