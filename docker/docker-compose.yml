@@ -13,7 +13,7 @@ services:
       WORDPRESS_DB_PASSWORD: wppassword
       WORDPRESS_DB_NAME: wordpress
     volumes:
-      - wordpress_data:/var/www/html
+      - ./app:/var/www/html
 
   db: 
     image: mysql:8.0.45
