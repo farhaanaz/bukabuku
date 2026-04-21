@@ -3,3 +3,22 @@ Theme Name: My React Theme
 Author: Farhan
 Version: 1.0
 */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Override WordPress wrapper */
+#page,
+#content {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
