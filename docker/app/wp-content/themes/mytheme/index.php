@@ -9,9 +9,9 @@
 
 <div id="root"></div>
 
-<link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/index-CCKRumuN.css">
+<link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/index-CYGfNM1H.css">
 
-<script type="module" src="<?php echo get_template_directory_uri(); ?>/assets/index-D6Hm_bob.js"></script>
+<script type="module" src="<?php echo get_template_directory_uri(); ?>/assets/index-CUMpmRZb.js"></script>
 
 <?php wp_footer(); ?>
 </body>
