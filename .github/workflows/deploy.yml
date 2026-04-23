@@ -36,7 +36,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "frontend/dist/*"
-          target: ${{ secrets.TARGET_DIR }}
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          overwrite: true
 
       - name: Restart Docker
         uses: appleboy/ssh-action@v1.0.3
