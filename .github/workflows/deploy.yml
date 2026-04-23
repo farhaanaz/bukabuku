@@ -19,15 +19,20 @@ jobs:
         with:
           node-version: 18
       
-      - name: Install dependencies
+      - name: Build frontend
         run: |
           cd frontend
           npm install
-
-      - name: Build project
-        run: |
-          cd frontend
           npm run build
+
+      - name: Clean dist folder on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -37,6 +42,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "frontend/dist/*"
           target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          strip_components: 2
           overwrite: true
 
       - name: Restart Docker
