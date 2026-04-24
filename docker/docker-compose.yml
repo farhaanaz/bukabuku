@@ -12,8 +12,6 @@ services:
       WORDPRESS_DB_USER: wpuser
       WORDPRESS_DB_PASSWORD: wppassword
       WORDPRESS_DB_NAME: wordpress
-      WP_HOME: http://100.54.32.239
-      WP_SITEURL: http://100.54.32.239
     volumes:
       - ./app:/var/www/html
 
