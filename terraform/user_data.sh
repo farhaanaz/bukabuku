@@ -4,15 +4,19 @@ set -e
 
 exec > /var/log/user-data.log 2>&1
 
+
+# INSTALL BASIC PACKAGES
 apt update -y
 apt install -y ca-certificates curl gnupg lsb-release git
 
+# INSTALL DOCKER
 install -m 0755 -d /etc/apt/keyrings
+
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
     gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
 echo \
-    "deb [arch=$(dpkg --print-architecture) \
+  "deb [arch=$(dpkg --print-architecture) \
   signed-by=/etc/apt/keyrings/docker.gpg] \
   https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
@@ -26,7 +30,10 @@ systemctl start docker
 
 usermod -aG docker ubuntu
 
+# CLONE / UPDATE REPO
+
 cd /home/ubuntu
+
 if [ ! -d "bukabuku" ]; then
   git clone https://github.com/farhaanaz/bukabuku.git
 fi
@@ -37,44 +44,54 @@ git reset --hard origin/main
 
 sleep 20
 
+
+# DOCKER COMPOSE
+
 cd /home/ubuntu/bukabuku/docker
 
-# STOP + REMOVE container & volume
+# reset container + volume 
 sudo docker compose down -v || true
 
-# PULL IMAGE
+# pull latest image
 sudo docker compose pull
 
-# RUN CONTAINER
+# start container
 sudo docker compose up -d --remove-orphans
 
-sleep 10
+
+# WAIT CONTAINER READY
+
+echo "Waiting containers..."
+sleep 15
+
+
+# INSTALL WP-CLI (IF NOT EXISTS)
+
+echo "Installing WP-CLI..."
 
 sudo docker exec bukabuku-wordpress bash -c "
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
-chmod +x wp-cli.phar &&
-mv wp-cli.phar /usr/local/bin/wp
+if ! command -v wp > /dev/null; then
+  curl -s -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
+  chmod +x wp-cli.phar &&
+  mv wp-cli.phar /usr/local/bin/wp
+fi
 "
 
-# FIX PERMISSION
-sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes
-sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes
 
-# specific theme
-sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
-sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
+# WAIT DATABASE READY
 
-echo "Waiting for WordPress container..."
+echo "Waiting database..."
 
-until sudo docker exec bukabuku-wordpress wp core is-installed --allow-root 2>/dev/null; do
-  echo "WordPress not ready yet..."
+until sudo docker exec bukabuku-wordpress wp db check --allow-root >/dev/null 2>&1; do
+  echo "Database not ready..."
   sleep 5
-  break
 done
 
-# ==============================
-# AUTO INSTALL WORDPRESS (ONLY IF NOT INSTALLED)
-# ==============================
+echo "Database ready!"
+
+
+# AUTO INSTALL WORDPRESS
+
 if ! sudo docker exec bukabuku-wordpress wp core is-installed --allow-root; then
   echo "Installing WordPress..."
 
@@ -88,8 +105,16 @@ if ! sudo docker exec bukabuku-wordpress wp core is-installed --allow-root; then
     --admin_email="admin@mail.com" \
     --skip-email \
     --allow-root
+
+  echo "WordPress installed!"
 else
   echo "WordPress already installed, skipping..."
 fi
+
+
+# FIX PERMISSION (CRITICAL)
+
+sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes
+sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes
 
 sudo find /home/ubuntu/bukabuku/docker/app/wp-content/themes -type d -exec chmod g+s {} \;
