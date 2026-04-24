@@ -3,34 +3,34 @@ import { ChevronDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const FICTION_CATEGORIES = [
-  'Fantasy',
-  'Science Fiction (Sci-Fi)',
-  'Mystery / Detective',
+  'Fantasi',
+  'Fiksi Ilmiah (Sci-Fi)',
+  'Misteri / Detektif',
   'Thriller / Suspense',
-  'Horror',
-  'Romance',
-  'Historical Fiction',
-  'Adventure',
+  'Horor',
+  'Roman',
+  'Fiksi Sejarah',
+  'Petualangan',
   'Dystopian',
-  'Young Adult (YA)',
-  "Children's Fiction",
-  'Literary Fiction',
-  'Graphic Novels / Comics',
+  'Remaja (Young Adult)',
+  'Fiksi Anak-anak',
+  'Fiksi Sastra',
+  'Novel Grafis / Komik',
 ];
 
 export const NON_FICTION_CATEGORIES = [
-  'Biography / Autobiography / Memoir',
-  'Self-Help / Personal Development',
-  'Business / Economics',
-  'History',
-  'Science & Technology',
-  'Philosophy',
-  'Psychology',
-  'Politics',
-  'Religion / Spirituality',
-  'Health & Fitness',
-  'Travel',
-  'True Crime',
+  'Biografi / Autobiografi / Memoar',
+  'Pengembangan Diri',
+  'Bisnis / Ekonomi',
+  'Sejarah',
+  'Sains & Teknologi',
+  'Filsafat',
+  'Psikologi',
+  'Politik',
+  'Agama / Spiritualitas',
+  'Kesehatan & Kebugaran',
+  'Perjalanan',
+  'Kejahatan Nyata',
 ];
 
 interface CategoryFilterProps {
@@ -76,7 +76,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-transparent hover:border-primary hover:bg-white transition-all"
       >
-        <span className="text-sm font-medium">Categories</span>
+        <span className="text-sm font-medium">Kategori</span>
         {selectedCategories.length > 0 && (
           <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
             {selectedCategories.length}
@@ -95,14 +95,14 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
             className="absolute top-full mt-2 left-0 bg-white rounded-xl shadow-lg border border-border w-[600px] max-h-[500px] overflow-hidden z-50"
           >
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h3 className="font-semibold">Filter by Category</h3>
+              <h3 className="font-semibold">Filter Berdasarkan Kategori</h3>
               {selectedCategories.length > 0 && (
                 <button
                   onClick={clearAll}
                   className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1"
                 >
                   <X className="w-4 h-4" />
-                  Clear All
+                  Hapus Semua
                 </button>
               )}
             </div>
@@ -111,7 +111,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
               {/* Fiction */}
               <div className="p-4">
                 <h4 className="font-semibold text-sm text-muted-foreground mb-3 uppercase tracking-wide">
-                  Fiction
+                  Fiksi
                 </h4>
                 <div className="space-y-2">
                   {FICTION_CATEGORIES.map((category) => (
@@ -136,7 +136,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
               {/* Non-Fiction */}
               <div className="p-4">
                 <h4 className="font-semibold text-sm text-muted-foreground mb-3 uppercase tracking-wide">
-                  Non-Fiction
+                  Non-Fiksi
                 </h4>
                 <div className="space-y-2">
                   {NON_FICTION_CATEGORIES.map((category) => (

@@ -7,23 +7,23 @@ import { NavigationContext } from '../App';
 const shippingOptions = [
   {
     id: 'standard',
-    name: 'Standard',
+    name: 'Standar',
     provider: 'Lion Parcel',
-    duration: '3-6 business days',
+    duration: '3-6 hari kerja',
     price: 58000,
   },
   {
     id: 'express',
-    name: 'Express',
+    name: 'Ekspres',
     provider: 'JNE Express',
-    duration: '1-2 business days',
+    duration: '1-2 hari kerja',
     price: 95000,
   },
   {
     id: 'cargo',
-    name: 'Cargo',
+    name: 'Kargo',
     provider: 'Lion Parcel Bigpack',
-    duration: '6-7 business days',
+    duration: '6-7 hari kerja',
     price: 110000,
   },
 ];
@@ -42,10 +42,10 @@ export function ShippingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <h2 className="text-2xl font-semibold">Shipping Method</h2>
+          <h2 className="text-2xl font-semibold">Metode Pengiriman</h2>
 
           <p className="text-muted-foreground">
-            Select your preferred shipping option
+            Pilih opsi pengiriman yang Anda inginkan
           </p>
 
           {/* Economy Option (Disabled) */}
@@ -57,8 +57,8 @@ export function ShippingPage() {
             <div className="flex items-center gap-4">
               <Package className="w-6 h-6" />
               <div className="flex-1">
-                <h3 className="font-semibold">Economy</h3>
-                <p className="text-sm text-muted-foreground">Not Available</p>
+                <h3 className="font-semibold">Ekonomi</h3>
+                <p className="text-sm text-muted-foreground">Tidak Tersedia</p>
               </div>
             </div>
           </motion.div>
@@ -118,8 +118,8 @@ export function ShippingPage() {
             <div className="flex items-center gap-4">
               <Package className="w-6 h-6" />
               <div className="flex-1">
-                <h3 className="font-semibold">Pick Up in Store</h3>
-                <p className="text-sm text-muted-foreground">Not Available</p>
+                <h3 className="font-semibold">Ambil di Toko</h3>
+                <p className="text-sm text-muted-foreground">Tidak Tersedia</p>
               </div>
             </div>
           </motion.div>
@@ -132,7 +132,7 @@ export function ShippingPage() {
             className="p-4 rounded-xl bg-blue-50 border border-blue-200"
           >
             <p className="text-sm text-blue-900">
-              <strong>Note:</strong> Due to postal service updates, shipping times may vary. We'll notify you once your order is shipped.
+              <strong>Catatan:</strong> Karena pembaruan layanan pos, waktu pengiriman dapat bervariasi. Kami akan memberi tahu Anda setelah pesanan Anda dikirim.
             </p>
           </motion.div>
 
@@ -142,7 +142,7 @@ export function ShippingPage() {
             onClick={() => navigate('payment')}
             className="w-full bg-primary text-primary-foreground py-4 rounded-full font-medium hover:shadow-lg transition-shadow"
           >
-            Continue to Payment
+            Lanjutkan ke Pembayaran
           </motion.button>
         </motion.div>
       </div>

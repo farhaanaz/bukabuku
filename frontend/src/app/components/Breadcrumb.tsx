@@ -9,40 +9,58 @@ interface BreadcrumbItem {
 }
 
 const pageToBreadcrumbs: Record<Page, BreadcrumbItem[]> = {
-  home: [{ label: 'Home', page: 'home' }],
+  home: [{ label: 'Beranda', page: 'home' }],
   product: [
-    { label: 'Home', page: 'home' },
-    { label: 'Product', page: 'product' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Produk', page: 'product' },
   ],
+  wishlist: [
+    { label: 'Beranda', page: 'home' },
+    { label: 'Daftar Keinginan', page: 'wishlist' },
+  ],
+  tracking: [
+    { label: 'Beranda', page: 'home' },
+    { label: 'Lacak Pesanan', page: 'tracking' },
+  ],
+  profile: [
+    { label: 'Beranda', page: 'home' },
+    { label: 'Profil Saya', page: 'profile' },
+  ],
+  search: [
+    { label: 'Beranda', page: 'home' },
+    { label: 'Hasil Pencarian', page: 'search' },
+  ],
+  login: [{ label: 'Masuk', page: 'login' }],
+  register: [{ label: 'Daftar', page: 'register' }],
   checkout: [
-    { label: 'Home', page: 'home' },
-    { label: 'Shopping Cart', page: 'checkout' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Keranjang Belanja', page: 'checkout' },
   ],
   address: [
-    { label: 'Home', page: 'home' },
-    { label: 'Shopping Cart', page: 'checkout' },
-    { label: 'Shipping Address', page: 'address' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Keranjang Belanja', page: 'checkout' },
+    { label: 'Alamat Pengiriman', page: 'address' },
   ],
   shipping: [
-    { label: 'Home', page: 'home' },
-    { label: 'Shopping Cart', page: 'checkout' },
-    { label: 'Shipping Address', page: 'address' },
-    { label: 'Shipping Method', page: 'shipping' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Keranjang Belanja', page: 'checkout' },
+    { label: 'Alamat Pengiriman', page: 'address' },
+    { label: 'Metode Pengiriman', page: 'shipping' },
   ],
   payment: [
-    { label: 'Home', page: 'home' },
-    { label: 'Shopping Cart', page: 'checkout' },
-    { label: 'Shipping Address', page: 'address' },
-    { label: 'Shipping Method', page: 'shipping' },
-    { label: 'Payment', page: 'payment' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Keranjang Belanja', page: 'checkout' },
+    { label: 'Alamat Pengiriman', page: 'address' },
+    { label: 'Metode Pengiriman', page: 'shipping' },
+    { label: 'Pembayaran', page: 'payment' },
   ],
   confirmation: [
-    { label: 'Home', page: 'home' },
-    { label: 'Shopping Cart', page: 'checkout' },
-    { label: 'Shipping Address', page: 'address' },
-    { label: 'Shipping Method', page: 'shipping' },
-    { label: 'Payment', page: 'payment' },
-    { label: 'Confirmation', page: 'confirmation' },
+    { label: 'Beranda', page: 'home' },
+    { label: 'Keranjang Belanja', page: 'checkout' },
+    { label: 'Alamat Pengiriman', page: 'address' },
+    { label: 'Metode Pengiriman', page: 'shipping' },
+    { label: 'Pembayaran', page: 'payment' },
+    { label: 'Konfirmasi', page: 'confirmation' },
   ],
 };
 

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - v2-new-frontend
 
 jobs:
   deploy:
@@ -18,26 +19,41 @@ jobs:
         with:
           node-version: 18
       
-      - name: Install dependencies
+      - name: Build frontend
         run: |
           cd frontend
           npm install
-
-      - name: Build project
-        run: |
-          cd frontend
           npm run build
+      
+      - name: clean old dist
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+                mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+                rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
+      - name: Debug build output
+        run: |
+          echo "=== FRONTEND FOLDER ==="
+          ls -la frontend
 
-      - name: Copy files to EC2
+          echo "=== DIST FOLDER ==="
+          ls -la frontend/dist || echo "dist not found"
+
+      - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SHH_PRIVATE_KEY }}
-          source: "frontend/dist/"
-          target: ${{ secrets.TARGET_DIR }}
-
-      - name: Restart Docker
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist"
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          strip_components: 2
+          overwrite: true
+      
+      - name: restart docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -45,4 +61,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/bukabuku/docker
-            docker compose restart
+            docker compose up -d --remove-orphans

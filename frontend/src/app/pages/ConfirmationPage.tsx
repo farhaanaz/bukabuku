@@ -17,8 +17,8 @@ export function ConfirmationPage() {
       method: 'Transfer BCA',
     },
     delivery: {
-      method: 'Standard - Lion Parcel',
-      duration: '3-6 business days',
+      method: 'Standar - Lion Parcel',
+      duration: '3-6 hari kerja',
       estimatedDelivery: 'April 23 - April 28, 2026',
     },
     items: [
@@ -65,9 +65,9 @@ export function ConfirmationPage() {
           >
             <CheckCircle2 className="w-10 h-10 text-green-600" />
           </motion.div>
-          <h2 className="text-3xl font-bold mb-2">Order Confirmed!</h2>
+          <h2 className="text-3xl font-bold mb-2">Pesanan Dikonfirmasi!</h2>
           <p className="text-muted-foreground">
-            Thank you for your purchase. Your order has been placed successfully.
+            Terima kasih atas pembelian Anda. Pesanan Anda telah berhasil dibuat.
           </p>
         </motion.div>
 
@@ -81,12 +81,12 @@ export function ConfirmationPage() {
           <div className="p-6 bg-white rounded-xl border border-border">
             <div className="flex items-center gap-2 mb-4">
               <MapPin className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Shipping Address</h3>
+              <h3 className="font-semibold">Alamat Pengiriman</h3>
             </div>
             <div className="space-y-1 text-sm">
               <p className="font-medium">{orderDetails.shipping.name}</p>
               <p className="text-muted-foreground">{orderDetails.shipping.address}</p>
-              <p className="text-muted-foreground">Phone: {orderDetails.shipping.phone}</p>
+              <p className="text-muted-foreground">Telepon: {orderDetails.shipping.phone}</p>
             </div>
             <button
               onClick={() => navigate('address')}
@@ -100,7 +100,7 @@ export function ConfirmationPage() {
           <div className="p-6 bg-white rounded-xl border border-border">
             <div className="flex items-center gap-2 mb-4">
               <CreditCard className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Payment Method</h3>
+              <h3 className="font-semibold">Metode Pembayaran</h3>
             </div>
             <p className="text-sm font-medium">{orderDetails.payment.method}</p>
             <button
@@ -115,20 +115,20 @@ export function ConfirmationPage() {
           <div className="p-6 bg-white rounded-xl border border-border">
             <div className="flex items-center gap-2 mb-4">
               <Truck className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold">Shipping Method</h3>
+              <h3 className="font-semibold">Metode Pengiriman</h3>
             </div>
             <div className="space-y-1 text-sm">
               <p className="font-medium">{orderDetails.delivery.method}</p>
               <p className="text-muted-foreground">{orderDetails.delivery.duration}</p>
               <div className="mt-3 p-3 bg-primary/5 rounded-lg">
-                <p className="text-xs text-muted-foreground">Estimated Delivery</p>
+                <p className="text-xs text-muted-foreground">Estimasi Pengiriman</p>
                 <p className="font-medium">{orderDetails.delivery.estimatedDelivery}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 mt-4">
               <input type="checkbox" id="shipInOne" className="rounded" />
               <label htmlFor="shipInOne" className="text-sm cursor-pointer">
-                Ship all items in one package
+                Kirim semua item dalam satu paket
               </label>
             </div>
             <button
@@ -144,7 +144,7 @@ export function ConfirmationPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Package className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Order Items</h3>
+                <h3 className="font-semibold">Item Pesanan</h3>
               </div>
               <button
                 onClick={() => navigate('checkout')}
@@ -176,29 +176,29 @@ export function ConfirmationPage() {
 
           {/* Coupon */}
           <div className="p-6 bg-white rounded-xl border border-border">
-            <h3 className="font-semibold mb-3">Coupon Code</h3>
+            <h3 className="font-semibold mb-3">Kode Kupon</h3>
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Enter coupon code"
+                placeholder="Masukkan kode kupon"
                 className="flex-1 px-4 py-2 rounded-lg border border-border focus:border-primary outline-none"
               />
               <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:shadow-md transition-shadow">
-                Apply
+                Terapkan
               </button>
             </div>
           </div>
 
           {/* Payment Summary */}
           <div className="p-6 bg-white rounded-xl border border-border">
-            <h3 className="font-semibold mb-4">Payment Summary</h3>
+            <h3 className="font-semibold mb-4">Ringkasan Pembayaran</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-medium">Rp {orderDetails.pricing.subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Shipping</span>
+                <span className="text-muted-foreground">Pengiriman</span>
                 <span className="font-medium">Rp {orderDetails.pricing.shipping.toLocaleString()}</span>
               </div>
               <div className="pt-3 border-t border-border flex justify-between">
@@ -210,6 +210,28 @@ export function ConfirmationPage() {
             </div>
           </div>
 
+          {/* Order Tracking Notice */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="p-6 bg-blue-50 border border-blue-200 rounded-xl"
+          >
+            <h3 className="font-semibold mb-2 text-blue-900">Lacak Pesanan Anda</h3>
+            <p className="text-sm text-blue-800 mb-4">
+              Setelah pembayaran Anda dikonfirmasi, Anda dapat melacak status pengiriman secara real-time.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('tracking')}
+              className="w-full bg-blue-600 text-white py-3 rounded-full font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <Package className="w-5 h-5" />
+              Lacak Pesanan Saya
+            </motion.button>
+          </motion.div>
+
           <div className="flex gap-4">
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -217,14 +239,14 @@ export function ConfirmationPage() {
               onClick={() => navigate('home')}
               className="flex-1 border border-border py-4 rounded-full font-medium hover:bg-muted transition-colors"
             >
-              Continue Shopping
+              Lanjutkan Belanja
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex-1 bg-primary text-primary-foreground py-4 rounded-full font-medium hover:shadow-lg transition-shadow"
             >
-              Complete Order
+              Selesaikan Pesanan
             </motion.button>
           </div>
         </motion.div>

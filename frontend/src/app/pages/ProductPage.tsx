@@ -1,36 +1,69 @@
 import { motion } from 'motion/react';
 import { Star, ShoppingCart, Heart, Share2 } from 'lucide-react';
-import { useContext } from 'react';
-import { NavigationContext } from '../App';
+import { useContext, useState } from 'react';
+import { NavigationContext, WishlistContext, CartContext } from '../App';
+import { getBookById } from '../data/books';
 
 export function ProductPage({ productId }: { productId?: string }) {
   const { navigate } = useContext(NavigationContext);
-  const id = productId;
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(WishlistContext);
+  const { addToCart } = useContext(CartContext);
+  const [showAddedToCart, setShowAddedToCart] = useState(false);
 
-  // Mock product data
-  const product = {
-    id,
-    title: 'One Day, Everyone Will Have Always Been Against This',
-    author: 'Anonymous',
-    price: 71200,
-    originalPrice: 89000,
-    image: 'https://images.unsplash.com/photo-1580642612739-abcaba21b037?w=800',
-    rating: 4.8,
-    reviewCount: 142,
-    isbn: '978-0-123456-78-9',
-    publisher: 'Literary Press',
-    year: 2024,
-    pages: 352,
-    language: 'English',
-    format: 'Soft Cover',
-    description:
-      'A profound exploration of collective memory and social change. This book examines how societies reshape their narratives and the powerful forces that drive historical revisionism.',
+  // Get product data from database
+  const product = productId ? getBookById(productId) : null;
+
+  // If product not found, show error
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center py-12">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Produk Tidak Ditemukan</h2>
+          <p className="text-muted-foreground mb-6">
+            Maaf, buku yang Anda cari tidak tersedia.
+          </p>
+          <button
+            onClick={() => navigate('home')}
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-full font-medium hover:shadow-lg transition-shadow"
+          >
+            Kembali ke Beranda
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const discount = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+  const inWishlist = isInWishlist(product.id);
+
+  const handleBuyNow = () => {
+    addToCart({ id: product.id, title: product.title, author: product.author, price: product.price, originalPrice: product.originalPrice, image: product.image });
+    navigate('checkout');
   };
 
-  const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-
   const handleAddToCart = () => {
-    navigate('checkout');
+    addToCart({ id: product.id, title: product.title, author: product.author, price: product.price, originalPrice: product.originalPrice, image: product.image });
+    setShowAddedToCart(true);
+    setTimeout(() => setShowAddedToCart(false), 3000);
+  };
+
+  const handleWishlistToggle = () => {
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({
+        id: product.id,
+        title: product.title,
+        author: product.author,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image,
+        rating: product.rating,
+        category: product.category,
+      });
+    }
   };
 
   return (
@@ -69,7 +102,7 @@ export function ProductPage({ productId }: { productId?: string }) {
               <h1 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">
                 {product.title}
               </h1>
-              <p className="text-xl text-muted-foreground">by {product.author}</p>
+              <p className="text-xl text-muted-foreground">oleh {product.author}</p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -86,7 +119,7 @@ export function ProductPage({ productId }: { productId?: string }) {
                 ))}
               </div>
               <span className="font-medium">{product.rating}</span>
-              <span className="text-muted-foreground">({product.reviewCount} reviews)</span>
+              <span className="text-muted-foreground">({product.reviewCount} ulasan)</span>
             </div>
 
             <div className="py-6 border-y border-border">
@@ -96,18 +129,29 @@ export function ProductPage({ productId }: { productId?: string }) {
                   Rp {product.originalPrice.toLocaleString()}
                 </span>
               </div>
-              <p className="text-primary font-medium mt-2">Save Rp {(product.originalPrice - product.price).toLocaleString()}</p>
+              <p className="text-primary font-medium mt-2">Hemat Rp {(product.originalPrice - product.price).toLocaleString()}</p>
             </div>
+
+            {showAddedToCart && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="bg-green-500 text-white py-3 px-4 rounded-lg text-center font-medium"
+              >
+                ✓ Berhasil ditambahkan ke keranjang!
+              </motion.div>
+            )}
 
             <div className="space-y-4">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handleAddToCart}
+                onClick={handleBuyNow}
                 className="w-full bg-primary text-primary-foreground py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:shadow-lg transition-shadow"
               >
                 <ShoppingCart className="w-5 h-5" />
-                Buy Now
+                Beli Sekarang
               </motion.button>
 
               <motion.button
@@ -117,17 +161,22 @@ export function ProductPage({ productId }: { productId?: string }) {
                 className="w-full border-2 border-primary text-primary py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors"
               >
                 <ShoppingCart className="w-5 h-5" />
-                Add to Cart
+                Tambah ke Keranjang
               </motion.button>
 
               <div className="flex gap-3">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex-1 border border-border py-3 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-muted transition-colors"
+                  onClick={handleWishlistToggle}
+                  className={`flex-1 py-3 rounded-full font-medium flex items-center justify-center gap-2 transition-colors ${
+                    inWishlist
+                      ? 'bg-red-500 text-white hover:bg-red-600'
+                      : 'border border-border hover:bg-muted'
+                  }`}
                 >
-                  <Heart className="w-5 h-5" />
-                  Wishlist
+                  <Heart className={`w-5 h-5 ${inWishlist ? 'fill-white' : ''}`} />
+                  {inWishlist ? 'Dalam Wishlist' : 'Tambah ke Wishlist'}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -135,32 +184,32 @@ export function ProductPage({ productId }: { productId?: string }) {
                   className="flex-1 border border-border py-3 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-muted transition-colors"
                 >
                   <Share2 className="w-5 h-5" />
-                  Share
+                  Bagikan
                 </motion.button>
               </div>
             </div>
 
             <div className="pt-6 space-y-4">
-              <h3 className="font-semibold text-lg">Product Details</h3>
+              <h3 className="font-semibold text-lg">Detail Produk</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">ISBN</span>
                   <p className="font-medium">{product.isbn}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Publisher</span>
+                  <span className="text-muted-foreground">Penerbit</span>
                   <p className="font-medium">{product.publisher}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Year</span>
+                  <span className="text-muted-foreground">Tahun</span>
                   <p className="font-medium">{product.year}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Pages</span>
+                  <span className="text-muted-foreground">Halaman</span>
                   <p className="font-medium">{product.pages}</p>
                 </div>
                 <div>
-                  <span className="text-muted-foreground">Language</span>
+                  <span className="text-muted-foreground">Bahasa</span>
                   <p className="font-medium">{product.language}</p>
                 </div>
                 <div>
@@ -171,7 +220,7 @@ export function ProductPage({ productId }: { productId?: string }) {
             </div>
 
             <div className="pt-6">
-              <h3 className="font-semibold text-lg mb-3">Description</h3>
+              <h3 className="font-semibold text-lg mb-3">Deskripsi</h3>
               <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
           </motion.div>

@@ -8,11 +8,11 @@ interface Step {
 }
 
 const steps: Step[] = [
-  { label: 'Cart', page: 'checkout' },
-  { label: 'Address', page: 'address' },
-  { label: 'Shipping', page: 'shipping' },
-  { label: 'Payment', page: 'payment' },
-  { label: 'Confirm', page: 'confirmation' },
+  { label: 'Keranjang', page: 'checkout' },
+  { label: 'Alamat', page: 'address' },
+  { label: 'Pengiriman', page: 'shipping' },
+  { label: 'Pembayaran', page: 'payment' },
+  { label: 'Konfirmasi', page: 'confirmation' },
 ];
 
 export function CheckoutStepper({ currentPath }: { currentPath: Page }) {

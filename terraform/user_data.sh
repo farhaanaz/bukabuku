@@ -2,6 +2,8 @@
 
 set -e
 
+exec > /var/log/user-data.log 2>&1
+
 apt update -y
 apt install -y ca-certificates curl gnupg lsb-release git
 
@@ -23,12 +25,20 @@ systemctl enable docker
 systemctl start docker
 
 usermod -aG docker ubuntu
+newgrp docker
 
 cd /home/ubuntu
-git clone https://github.com/farhaanaz/bukabuku.git
+if [ ! -d "bukabuku" ]; then
+  git clone https://github.com/farhaanaz/bukabuku.git
+fi
 
-sleep 10
+cd /home/ubuntu/bukabuku
+git fetch --all
+git reset --hard origin/main
 
-cd bukabuku/docker
+sleep 20
 
-docker compose up -d
+cd /home/ubuntu/bukabuku/docker
+
+docker compose pull
+docker compose up -d --remove-orphans

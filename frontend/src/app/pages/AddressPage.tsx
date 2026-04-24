@@ -88,12 +88,12 @@ export function AddressPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <h2 className="text-2xl font-semibold">Shipping Address</h2>
+          <h2 className="text-2xl font-semibold">Alamat Pengiriman</h2>
 
           <p className="text-muted-foreground">
             {addresses.length > 0
-              ? 'Select an address or add a new one'
-              : 'Please add your shipping address'}
+              ? 'Pilih alamat atau tambahkan yang baru'
+              : 'Silakan tambahkan alamat pengiriman Anda'}
           </p>
 
           {/* Add New Address Form */}
@@ -104,7 +104,7 @@ export function AddressPage() {
               className="p-6 bg-white rounded-xl border-2 border-primary space-y-4"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">New Address</h3>
+                <h3 className="font-semibold">Alamat Baru</h3>
                 <button
                   onClick={() => setIsAddingNew(false)}
                   className="p-1 hover:bg-muted rounded-lg transition-colors"
@@ -115,64 +115,64 @@ export function AddressPage() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium mb-2">Nama Lengkap *</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:border-primary outline-none"
-                    placeholder="Enter your full name"
+                    placeholder="Masukkan nama lengkap Anda"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Phone Number *</label>
+                  <label className="block text-sm font-medium mb-2">Nomor Telepon *</label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:border-primary outline-none"
-                    placeholder="e.g., 628123456789"
+                    placeholder="Contoh: 628123456789"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Street Address *</label>
+                <label className="block text-sm font-medium mb-2">Alamat Jalan *</label>
                 <textarea
                   value={formData.street}
                   onChange={(e) => setFormData({ ...formData, street: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-border focus:border-primary outline-none resize-none"
                   rows={2}
-                  placeholder="Street address, building, apartment, etc."
+                  placeholder="Alamat jalan, gedung, apartemen, dll."
                 />
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">City *</label>
+                  <label className="block text-sm font-medium mb-2">Kota *</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:border-primary outline-none"
-                    placeholder="City"
+                    placeholder="Kota"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Province</label>
+                  <label className="block text-sm font-medium mb-2">Provinsi</label>
                   <input
                     type="text"
                     value={formData.province}
                     onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:border-primary outline-none"
-                    placeholder="Province"
+                    placeholder="Provinsi"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Postal Code</label>
+                  <label className="block text-sm font-medium mb-2">Kode Pos</label>
                   <input
                     type="text"
                     value={formData.postalCode}
@@ -189,7 +189,7 @@ export function AddressPage() {
                 onClick={handleSaveAddress}
                 className="w-full bg-primary text-primary-foreground py-3 rounded-full font-medium hover:shadow-lg transition-shadow"
               >
-                Save Address
+                Simpan Alamat
               </motion.button>
             </motion.div>
           ) : (
@@ -199,7 +199,7 @@ export function AddressPage() {
               className="w-full p-4 border-2 border-dashed border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" />
-              Add New Address
+              Tambah Alamat Baru
             </motion.button>
           )}
 
@@ -225,7 +225,7 @@ export function AddressPage() {
                         <h3 className="font-semibold">{address.name}</h3>
                         {address.isDefault && (
                           <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">
-                            Default
+                            Utama
                           </span>
                         )}
                       </div>
@@ -240,7 +240,7 @@ export function AddressPage() {
                             {address.postalCode && `, ${address.postalCode}`}
                           </span>
                         </p>
-                        <p className="ml-6">Phone: {address.phone}</p>
+                        <p className="ml-6">Telepon: {address.phone}</p>
                       </div>
 
                       <div className="flex gap-2 mt-4">
@@ -261,7 +261,7 @@ export function AddressPage() {
                           }}
                           className="text-sm text-destructive font-medium hover:underline"
                         >
-                          Delete
+                          Hapus
                         </button>
                       </div>
                     </div>
@@ -290,9 +290,9 @@ export function AddressPage() {
             transition={{ delay: 0.2 }}
             className="p-6 rounded-xl border border-border bg-muted/30"
           >
-            <h3 className="font-semibold mb-2">Pick Up in Store</h3>
+            <h3 className="font-semibold mb-2">Ambil di Toko</h3>
             <p className="text-muted-foreground mb-3">
-              You can also pick up your order at our store location
+              Anda juga dapat mengambil pesanan di lokasi toko kami
             </p>
             <p className="text-sm">
               <strong>BookHaven Store</strong>
@@ -312,7 +312,7 @@ export function AddressPage() {
                 : 'bg-muted text-muted-foreground cursor-not-allowed'
             }`}
           >
-            Continue to Shipping
+            Lanjutkan ke Pengiriman
           </motion.button>
         </motion.div>
       </div>

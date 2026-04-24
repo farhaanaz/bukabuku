@@ -41,10 +41,10 @@ export function PaymentPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <h2 className="text-2xl font-semibold">Payment Method</h2>
+          <h2 className="text-2xl font-semibold">Metode Pembayaran</h2>
 
           <p className="text-muted-foreground">
-            Choose your preferred payment method
+            Pilih metode pembayaran yang Anda inginkan
           </p>
 
           {/* COD Option (Disabled) */}
@@ -57,8 +57,8 @@ export function PaymentPage() {
               <div className="flex items-center gap-3">
                 <CreditCard className="w-6 h-6" />
                 <div>
-                  <h3 className="font-semibold">Cash on Delivery (COD)</h3>
-                  <p className="text-sm text-muted-foreground">Not Available</p>
+                  <h3 className="font-semibold">Bayar di Tempat (COD)</h3>
+                  <p className="text-sm text-muted-foreground">Tidak Tersedia</p>
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@ export function PaymentPage() {
           <div className="space-y-3">
             <h3 className="font-semibold flex items-center gap-2">
               <Building2 className="w-5 h-5" />
-              Bank Transfer
+              Transfer Bank
             </h3>
 
             {paymentMethods.map((method, index) => (
@@ -126,7 +126,7 @@ export function PaymentPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold">PayPal</h3>
-                  <p className="text-sm text-muted-foreground">Not Available</p>
+                  <p className="text-sm text-muted-foreground">Tidak Tersedia</p>
                 </div>
               </div>
             </div>
@@ -138,7 +138,7 @@ export function PaymentPage() {
             onClick={() => navigate('confirmation')}
             className="w-full bg-primary text-primary-foreground py-4 rounded-full font-medium hover:shadow-lg transition-shadow"
           >
-            Continue to Confirmation
+            Lanjutkan ke Konfirmasi
           </motion.button>
         </motion.div>
       </div>
