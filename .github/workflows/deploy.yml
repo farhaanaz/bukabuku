@@ -24,8 +24,8 @@ jobs:
           cd frontend
           npm install
           npm run build
-
-      - name: Clean dist folder on EC2
+      
+      - name: clean old dist
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -34,18 +34,18 @@ jobs:
           script: |
             rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
-      - name: Copy files to EC2
+      - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "frontend/dist/*"
-          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          source: ".frontend/dist/*"
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/"
           strip_components: 2
           overwrite: true
-
-      - name: Restart Docker
+      
+      - name: restart docker-compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -53,4 +53,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/bukabuku/docker
-            docker compose restart
+            docker-compose restart

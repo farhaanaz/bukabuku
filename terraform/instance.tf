@@ -1,6 +1,6 @@
 resource "aws_instance" "bukabukuwebinstance" {
   ami                    = data.aws_ami.amiID.id
-  instance_type          = "t2.micro"
+  instance_type          = "t3.medium"
   key_name               = aws_key_pair.bukabuku_key.key_name
   vpc_security_group_ids = [aws_security_group.bukabuku_sg.id]
   availability_zone      = "us-east-1a"

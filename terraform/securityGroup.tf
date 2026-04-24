@@ -44,6 +44,14 @@ resource "aws_vpc_security_group_ingress_rule" "grafana" {
   to_port = 3000
 }
 
+resource "aws_vpc_security_group_ingress_rule" "prometheus" {
+  security_group_id = aws_security_group.bukabuku_sg.id
+  cidr_ipv4 = "0.0.0.0/0"
+  from_port = 9090
+  ip_protocol = "tcp"
+  to_port = 9090
+}
+
 resource "aws_vpc_security_group_egress_rule" "allowAllOutboundIPv4" {
   security_group_id = aws_security_group.bukabuku_sg.id
   cidr_ipv4         = "0.0.0.0/0"
