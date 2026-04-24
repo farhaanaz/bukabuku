@@ -21,22 +21,39 @@ function get_vite_asset($entry, $type = 'js') {
     return $manifest[$entry]['file'];
 
 function mytheme_enqueue_assets() {
-    $js = get_vite_asset('index.html', 'js');
-    $css = get_vite_asset('index.html', 'css');
+    $manifest_path = get_template_directory() . '/dist/manifest.json';
 
-    if ($css) {
-        wp_enqueue_style(
-            'mytheme-css',
-            get_template_directory_uri() . '/dist/' . $css,
-            [],
-            null
-        );
+    if (!file_exists($manifest_path)) {
+        error_log('Manifest not found');
+        return;
     }
 
-    if ($js) {
+    $manifest = json_decode(file_get_contents($manifest_path), true);
+
+    if (!isset($manifest['index.html'])) {
+        error_log('Entry index.html not found in manifest');
+        return;
+    }
+
+    $entry = $manifest['index.html'];
+
+    // CSS
+    if (!empty($entry['css'])) {
+        foreach ($entry['css'] as $css_file) {
+            wp_enqueue_style(
+                'mytheme-css',
+                get_template_directory_uri() . '/dist/' . $css_file,
+                [],
+                null
+            );
+        }
+    }
+
+    // JS
+    if (!empty($entry['file'])) {
         wp_enqueue_script(
             'mytheme-js',
-            get_template_directory_uri() . '/dist/' . $js,
+            get_template_directory_uri() . '/dist/' . $entry['file'],
             [],
             null,
             true
