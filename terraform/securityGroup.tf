@@ -14,7 +14,7 @@ resource "aws_security_group" "bukabuku_sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "sshFromMyIP" {
   security_group_id = aws_security_group.bukabuku_sg.id
-  cidr_ipv4         = "103.190.47.39/32" # get it from whatsmyip and /32 means only that IP address
+  cidr_ipv4         = "0.0.0.0/0" # get it from whatsmyip and /32 means only that IP address
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
