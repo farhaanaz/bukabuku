@@ -42,3 +42,6 @@ cd /home/ubuntu/bukabuku/docker
 
 docker compose pull
 docker compose up -d --remove-orphans
+
+sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
+sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
