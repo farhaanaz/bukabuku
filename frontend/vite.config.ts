@@ -35,7 +35,7 @@ export default defineConfig({
   build: {
     manifest: true,
     outDir: 'dist',
-    assetsDir: 'assets',
+    assetsDir: '', 
     emptyOutDir: true,
   },
 })
