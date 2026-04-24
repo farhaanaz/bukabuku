@@ -16,7 +16,7 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
-  base: '/wp-content/themes/mytheme/dist/',
+  base: './',
 
   plugins: [
     figmaAssetResolver(),
@@ -36,5 +36,11 @@ export default defineConfig({
     manifest: 'manifest.json',
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'index-[hash].js',
+        cssFileNames: 'index-[hash].css',
+      },
+    },
   },
 })
