@@ -48,9 +48,15 @@ sudo docker compose pull
 # RUN CONTAINER
 sudo docker compose up -d --remove-orphans
 
-# WAIT BIAR CONTAINER STABLE
 sleep 10
 
 # FIX PERMISSION
+sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes
+sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes
+
+# specific theme
 sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
 sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
+
+# setgid biar file baru ikut group
+sudo find /home/ubuntu/bukabuku/docker/app/wp-content/themes -type d -exec chmod g+s {} \;
