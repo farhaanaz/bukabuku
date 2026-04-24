@@ -64,40 +64,26 @@ sudo docker compose up -d --remove-orphans
 echo "Waiting containers..."
 sleep 15
 
-
-# INSTALL WP-CLI (IF NOT EXISTS)
-
-echo "Installing WP-CLI..."
-
-sudo docker exec bukabuku-wordpress bash -c "
-if ! command -v wp > /dev/null; then
-  curl -s -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
-  chmod +x wp-cli.phar &&
-  mv wp-cli.phar /usr/local/bin/wp
-fi
-"
-
-
 # WAIT DATABASE READY
 
 echo "Waiting database..."
 
-until sudo docker exec bukabuku-wordpress wp db check --allow-root >/dev/null 2>&1; do
+until sudo docker exec bukabuku-wpcli wp db check --path=/var/www/html --allow-root >/dev/null 2>&1; do
   echo "Database not ready..."
   sleep 5
 done
 
 echo "Database ready!"
 
-
 # AUTO INSTALL WORDPRESS
 
-if ! sudo docker exec bukabuku-wordpress wp core is-installed --allow-root; then
+if ! sudo docker exec bukabuku-wpcli wp core is-installed --path=/var/www/html --allow-root; then
   echo "Installing WordPress..."
 
   PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
 
-  sudo docker exec bukabuku-wordpress wp core install \
+  sudo docker exec bukabuku-wpcli wp core install \
+    --path=/var/www/html \
     --url="http://$PUBLIC_IP" \
     --title="Bukabuku" \
     --admin_user="admin" \
@@ -108,10 +94,8 @@ if ! sudo docker exec bukabuku-wordpress wp core is-installed --allow-root; then
 
   echo "WordPress installed!"
 else
-  echo "WordPress already installed, skipping..."
+  echo "WordPress already installed"
 fi
-
-
 # FIX PERMISSION (CRITICAL)
 
 sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes
