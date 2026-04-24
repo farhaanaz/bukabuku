@@ -42,6 +42,20 @@ jobs:
 
           echo "=== DIST FOLDER ==="
           ls -la frontend/dist || echo "dist not found"
+      
+      - name: Debug dist content
+        run: |
+          echo "=== DIST CONTENT ==="
+          ls -la frontend/dist
+      
+      - name: Clean dist folder on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
       - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -49,7 +63,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "frontend/dist/*"
+          source: "frontend/dist"
           target: "/home/ubuntu/tmp/deploy/"
           overwrite: true
 
