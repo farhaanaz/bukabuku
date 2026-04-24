@@ -12,7 +12,7 @@ cd ..
 
 TARGET="docker/app/wp-content/themes/mytheme"
 
-rm -rf $TARGET/assets
+rm -rf $TARGET/dist
 rm -f $TARGET/index.html
 
-cp -r frontend/dist/* $TARGET/
+cp -r frontend/dist $TARGET/
