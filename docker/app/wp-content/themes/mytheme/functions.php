@@ -14,11 +14,10 @@ function mytheme_enqueue_assets() {
     }
 
     $manifest = json_decode(file_get_contents($manifest_path), true);
-
     $entry = $manifest['index.html'] ?? null;
 
     if (!$entry) {
-        error_log("Entry index.html not found");
+        error_log("Entry not found");
         return;
     }
 
