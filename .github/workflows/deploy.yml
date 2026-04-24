@@ -50,10 +50,22 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "frontend/dist"
-          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          target: "/home/ubuntu/tmp/deploy/"
           strip_components: 2
           overwrite: true
-      
+
+      - name: Move files to theme (sudo)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
+            sudo cp -r /home/ubuntu/tmp-deploy/frontend/dist/* /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/
+            sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            rm -rf /home/ubuntu/tmp-deploy
+
       - name: restart docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
