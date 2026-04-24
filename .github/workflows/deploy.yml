@@ -52,7 +52,25 @@ jobs:
           source: "frontend/dist/*"
           target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
           overwrite: true
-      
+
+      - name: Fix dist structure
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+
+            # kalau ada folder frontend → flatten
+            if [ -d "frontend" ]; then
+              find frontend -type f -exec mv {} . \;
+              rm -rf frontend
+            fi
+
+            echo "=== FINAL DIST ==="
+            ls -la
+
       # FIX PERMISSION
       - name: Fix permission
         uses: appleboy/ssh-action@v1.0.3
