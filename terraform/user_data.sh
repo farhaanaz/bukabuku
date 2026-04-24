@@ -101,11 +101,19 @@ else
   echo "WordPress already installed"
 fi
 
+# SET THEME
+# ==============================
+echo "Setting theme..."
+
+sudo docker exec bukabuku-wpcli wp theme activate mytheme \
+  --path=/var/www/html \
+  --allow-root
+
+echo "Theme activated!"
 
 # FIX PERMISSION
-sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes
-sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes
-
-sudo find /home/ubuntu/bukabuku/docker/app/wp-content/themes -type d -exec chmod g+s {} \;
+sudo chown -R www-data:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
+sudo find /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme -type d -exec chmod 755 {} \;
+sudo find /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme -type f -exec chmod 644 {} \;
 
 echo "SETUP COMPLETE 🚀"

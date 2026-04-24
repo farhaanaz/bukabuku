@@ -4,8 +4,8 @@ define('DB_USER', 'wpuser');
 define('DB_PASSWORD', 'wppassword');
 define('DB_HOST', 'db');
 
-define('WP_HOME', 'http://' . $_SERVER['HTTP_HOST']);
-define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST']);
+define('WP_HOME', ('WP_HOME') ?: 'http://localhost');
+define('WP_SITEURL', ('WP_SITEURL') ?: 'http://localhost');
 
 define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', false);

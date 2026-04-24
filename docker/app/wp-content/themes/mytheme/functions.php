@@ -19,4 +19,29 @@ function get_vite_asset($entry, $type = 'js') {
     }
 
     return $manifest[$entry]['file'];
+
+function mytheme_enqueue_assets() {
+    $js = get_vite_asset('index.html', 'js');
+    $css = get_vite_asset('index.html', 'css');
+
+    if ($css) {
+        wp_enqueue_style(
+            'mytheme-css',
+            get_template_directory_uri() . '/dist/' . $css,
+            [],
+            null
+        );
+    }
+
+    if ($js) {
+        wp_enqueue_script(
+            'mytheme-js',
+            get_template_directory_uri() . '/dist/' . $js,
+            [],
+            null,
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'mytheme_enqueue_assets');
 }
