@@ -25,60 +25,56 @@ jobs:
           npm install
           npm run build
       
-      - name: clean old dist
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            sudo mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
-            sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
-      
-      - name: Debug build output
-        run: |
-          echo "=== FRONTEND FOLDER ==="
-          ls -la frontend
-
-          echo "=== DIST FOLDER ==="
-          ls -la frontend/dist || echo "dist not found"
-      
+      # DEBUG (WAJIB)
       - name: Debug dist content
         run: |
           echo "=== DIST CONTENT ==="
           ls -la frontend/dist
       
-      - name: Clean dist folder on EC2
+      # PASTIKAN FOLDER ADA
+      - name: Prepare EC2 folder
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
             rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
-
+      
+      # COPY LANGSUNG KE DIST (NO TEMP FOLDER, NO RIBET)
       - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "frontend/dist"
-          target: "/home/ubuntu/tmp/deploy/"
+          source: "frontend/dist/*"
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
           overwrite: true
-
-      - name: Move files to theme (sudo)
+      
+      # FIX PERMISSION
+      - name: Fix permission
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
-            sudo cp -r /home/ubuntu/tmp-deploy/frontend/dist/* /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/
             sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
-            rm -rf /home/ubuntu/tmp-deploy
-
+            sudo chmod -R 755 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+      
+      # OPTIONAL DEBUG
+      - name: Verify on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "=== EC2 DIST CONTENT ==="
+            ls -la /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+      
       - name: restart docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
