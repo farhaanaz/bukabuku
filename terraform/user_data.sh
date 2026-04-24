@@ -25,7 +25,6 @@ systemctl enable docker
 systemctl start docker
 
 usermod -aG docker ubuntu
-newgrp docker
 
 cd /home/ubuntu
 if [ ! -d "bukabuku" ]; then
@@ -40,10 +39,18 @@ sleep 20
 
 cd /home/ubuntu/bukabuku/docker
 
-docker compose pull
-sudo docker volume rm bukabuku_db_data || true
-sudo docker volume rm bukabuku_wordpress_data || true
-docker compose up -d --remove-orphans
+# STOP + REMOVE container & volume
+sudo docker compose down -v || true
 
+# PULL IMAGE
+sudo docker compose pull
+
+# RUN CONTAINER
+sudo docker compose up -d --remove-orphans
+
+# WAIT BIAR CONTAINER STABLE
+sleep 10
+
+# FIX PERMISSION
 sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
 sudo chmod -R 775 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
