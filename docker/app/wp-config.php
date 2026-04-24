@@ -4,8 +4,8 @@ define('DB_USER', 'wpuser');
 define('DB_PASSWORD', 'wppassword');
 define('DB_HOST', 'db');
 
-define('WP_HOME', getenv('WP_HOME') ?: 'http://' . $_SERVER['HTTP_HOST']);
-define('WP_SITEURL', getenv('WP_SITEURL') ?: 'http://' . $_SERVER['HTTP_HOST']);
+define('WP_HOME', 'http://' . $_SERVER['HTTP_HOST']);
+define('WP_SITEURL', 'http://' . $_SERVER['HTTP_HOST']);
 
 define('WP_DEBUG', false);
 define('WP_DEBUG_LOG', false);

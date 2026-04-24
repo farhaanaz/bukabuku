@@ -41,6 +41,8 @@ sleep 20
 cd /home/ubuntu/bukabuku/docker
 
 docker compose pull
+sudo docker volume rm bukabuku_db_data || true
+sudo docker volume rm bukabuku_wordpress_data || true
 docker compose up -d --remove-orphans
 
 sudo chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
