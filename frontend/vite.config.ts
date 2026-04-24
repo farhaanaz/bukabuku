@@ -36,5 +36,10 @@ export default defineConfig({
     manifest: 'manifest.json',
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        cssFileNames: 'assets/assets/index-[hash].css',
+      },
+    },
   },
 })
