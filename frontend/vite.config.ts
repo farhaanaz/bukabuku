@@ -33,7 +33,7 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   build: {
-    manifest: true,
+    manifest: 'manifest.json',
     outDir: 'dist',
     emptyOutDir: true,
   },
