@@ -1,4 +1,5 @@
 <?php
+
 function remove_wp_styles() {
     wp_dequeue_style('wp-block-library');
     wp_dequeue_style('global-styles');
@@ -9,28 +10,27 @@ function mytheme_enqueue_assets() {
     $manifest_path = get_template_directory() . '/dist/manifest.json';
 
     if (!file_exists($manifest_path)) {
-        error_log("Manifest not found");
+        error_log("❌ Manifest not found");
         return;
     }
 
     $manifest = json_decode(file_get_contents($manifest_path), true);
-    $entry = $manifest['index.html'] ?? null;
 
-    if (!$entry) {
-        error_log("Entry not found");
+    if (!isset($manifest['index.html'])) {
+        error_log("❌ Entry not found");
         return;
     }
 
+    $entry = $manifest['index.html'];
+
     // CSS
-    if (!empty($entry['css'])) {
-        foreach ($entry['css'] as $css) {
-            wp_enqueue_style(
-                'mytheme-css',
-                get_template_directory_uri() . '/dist/' . $css,
-                [],
-                null
-            );
-        }
+    if (!empty($entry['css'][0])) {
+        wp_enqueue_style(
+            'mytheme-css',
+            get_template_directory_uri() . '/dist/' . $entry['css'][0],
+            [],
+            null
+        );
     }
 
     // JS
