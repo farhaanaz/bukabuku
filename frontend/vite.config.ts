@@ -33,13 +33,9 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   build: {
-    manifest: 'manifest.json',
+    manifest: true,
     outDir: 'dist',
+    assetsDir: 'assets',
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        cssFileNames: 'assets/assets/index-[hash].css',
-      },
-    },
   },
 })
