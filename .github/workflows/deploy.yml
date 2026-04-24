@@ -34,6 +34,7 @@ jobs:
           script: |
             sudo mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
             sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
+      
       - name: Debug build output
         run: |
           echo "=== FRONTEND FOLDER ==="
@@ -45,7 +46,7 @@ jobs:
       - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.HOST }}
+          host: root
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "frontend/dist"
