@@ -32,8 +32,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
-
+                mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+                rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
       - name: Debug build output
         run: |
           echo "=== FRONTEND FOLDER ==="
@@ -48,12 +48,12 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ".frontend/dist/*"
-          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/"
+          source: "frontend/dist"
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
           strip_components: 2
           overwrite: true
       
-      - name: restart docker-compose
+      - name: restart docker compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -61,4 +61,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/bukabuku/docker
-            docker-compose restart
+            docker compose up -d --remove-orphans
