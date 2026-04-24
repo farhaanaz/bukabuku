@@ -35,12 +35,12 @@ jobs:
             rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
       - name: Debug build output
-          run: |
-            echo "=== FRONTEND FOLDER ==="
-            ls -la frontend
+        run: |
+          echo "=== FRONTEND FOLDER ==="
+          ls -la frontend
 
-            echo "=== DIST FOLDER ==="
-            ls -la frontend/dist || echo "dist not found"
+          echo "=== DIST FOLDER ==="
+          ls -la frontend/dist || echo "dist not found"
 
       - name: Copy frontend build to EC2
         uses: appleboy/scp-action@v0.1.7
