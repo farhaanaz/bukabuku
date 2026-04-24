@@ -49,9 +49,8 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "frontend/dist"
+          source: "frontend/dist/*"
           target: "/home/ubuntu/tmp/deploy/"
-          strip_components: 2
           overwrite: true
 
       - name: Move files to theme (sudo)
