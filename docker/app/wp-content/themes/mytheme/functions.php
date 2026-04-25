@@ -1,5 +1,7 @@
 <?php
 
+error_log("FUNCTIONS.PHP LOADED");
+
 function mytheme_enqueue_assets() {
     $manifest_path = get_template_directory() . '/dist/.vite/manifest.json';
 
