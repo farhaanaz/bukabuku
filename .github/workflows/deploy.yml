@@ -57,6 +57,17 @@ jobs:
             sudo mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
             sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
+      - name: Fix permission on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            sudo chown -R ubuntu:ubuntu /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            sudo chmod -R 755 /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+
       # ==============================
       # COPY BUILD TO EC2
       # ==============================
