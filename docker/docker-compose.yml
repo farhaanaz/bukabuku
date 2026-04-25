@@ -6,9 +6,9 @@ services:
     container_name: bukabuku-wordpress
     restart: always
     depends_on:
-      - db
+      - mysql
     environment:
-      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: wpuser
       WORDPRESS_DB_PASSWORD: wppassword
       WORDPRESS_DB_NAME: wordpress

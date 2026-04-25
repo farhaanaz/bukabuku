@@ -1,25 +1,12 @@
 import { defineConfig } from 'vite'
 import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-
-function figmaAssetResolver() {
-  return {
-    name: 'figma-asset-resolver',
-    resolveId(id) {
-      if (id.startsWith('figma:asset/')) {
-        const filename = id.replace('figma:asset/', '')
-        return path.resolve(__dirname, 'src/assets', filename)
-      }
-    },
-  }
-}
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   base: '/wp-content/themes/mytheme/dist/',
 
   plugins: [
-    figmaAssetResolver(),
     react(),
     tailwindcss(),
   ],
@@ -30,12 +17,20 @@ export default defineConfig({
     },
   },
 
-  assetsInclude: ['**/*.svg', '**/*.csv'],
-
   build: {
-    manifest: true,
     outDir: 'dist',
-    assetsDir: '',
     emptyOutDir: true,
-  },
+    assetsDir: 'assets',
+
+    manifest: true,
+
+    rollupOptions: {
+      input: 'index.html',
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
+      }
+    }
+  }
 })

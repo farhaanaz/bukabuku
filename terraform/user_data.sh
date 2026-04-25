@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-
 exec > /var/log/user-data.log 2>&1
 
 echo "=== START SETUP ==="
@@ -18,14 +17,14 @@ apt install -y ca-certificates curl gnupg lsb-release git
 install -m 0755 -d /etc/apt/keyrings
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-    gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
 echo \
-  "deb [arch=$(dpkg --print-architecture) \
-  signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
+"deb [arch=$(dpkg --print-architecture) \
+signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu \
+$(. /etc/os-release && echo $VERSION_CODENAME) stable" \
+| tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt update -y
 apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
@@ -33,10 +32,10 @@ apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 systemctl enable docker
 systemctl start docker
 
-usermod -aG docker ubuntu
+sleep 10
 
 # ==============================
-# CLONE / UPDATE REPO
+# CLONE REPO
 # ==============================
 cd /home/ubuntu
 
@@ -49,71 +48,63 @@ git fetch --all
 git reset --hard origin/main
 
 # ==============================
-# CHECK FRONTEND BUILD
-# ==============================
-echo "Checking frontend build..."
-if [ ! -d "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist" ]; then
-  echo "dist folder missing!"
-else
-  echo "dist folder exists"
-fi
-
-# ==============================
-# DOCKER COMPOSE
+# RUN DOCKER
 # ==============================
 cd /home/ubuntu/bukabuku/docker
 
-docker compose down -v || true
-docker compose pull
-docker compose up -d --remove-orphans
+sudo docker compose down -v || true
+sudo docker compose pull
+sudo docker compose up -d --remove-orphans
 
-# ==============================
-# WAIT CONTAINER READY
-# ==============================
 echo "Waiting containers..."
-sleep 10
+sleep 25
 
 # ==============================
-# WAIT MYSQL READY
+# WAIT MYSQL
 # ==============================
-echo "Waiting MySQL..."
-
-until docker exec mysql mysqladmin ping -h "localhost" --silent; do
+until sudo docker exec mysql mysqladmin ping -h "localhost" --silent; do
   echo "MySQL not ready..."
   sleep 5
 done
 
-echo "MySQL is ready!"
+echo "MySQL ready!"
 
 # ==============================
-# WAIT NETWORK STABILIZE
+# WAIT WORDPRESS
 # ==============================
-echo "Waiting Docker network..."
-sleep 10
-
-# ==============================
-# WAIT WORDPRESS DB READY
-# ==============================
-echo "Waiting WordPress DB connection..."
-
-until docker exec bukabuku-wpcli bash -c "
-wp db check --path=/var/www/html --allow-root
-" >/dev/null 2>&1; do
-  echo "WordPress DB not ready..."
-  sleep 5
+until sudo docker exec bukabuku-wordpress test -f /var/www/html/wp-config.php; do
+  echo "Waiting wp-config.php..."
+  sleep 3
 done
 
-echo "WordPress DB ready!"
+echo "WordPress ready!"
 
 # ==============================
-# AUTO INSTALL WORDPRESS
+# FIX wp-config.php (REMOVE BAD CONSTANT)
 # ==============================
-if ! docker exec bukabuku-wpcli wp core is-installed --path=/var/www/html --allow-root; then
+echo "Fixing wp-config.php..."
+
+sudo docker exec bukabuku-wordpress sed -i "/WP_SITEURL/d" /var/www/html/wp-config.php || true
+sudo docker exec bukabuku-wordpress sed -i "/WP_HOME/d" /var/www/html/wp-config.php || true
+
+# ==============================
+# FIX PERMISSION
+# ==============================
+sudo docker exec bukabuku-wordpress bash -c "
+chown -R www-data:www-data /var/www/html
+find /var/www/html -type d -exec chmod 755 {} \;
+find /var/www/html -type f -exec chmod 644 {} \;
+" || true
+
+# ==============================
+# INSTALL WORDPRESS (SAFE)
+# ==============================
+PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
+
+if ! sudo docker exec bukabuku-wpcli wp core is-installed --path=/var/www/html --allow-root; then
   echo "Installing WordPress..."
 
-  PUBLIC_IP=$(curl -s --retry 5 http://checkip.amazonaws.com)
-
-  docker exec bukabuku-wpcli wp core install \
+  sudo docker exec bukabuku-wpcli wp core install \
     --path=/var/www/html \
     --url="http://$PUBLIC_IP" \
     --title="Bukabuku" \
@@ -128,31 +119,45 @@ else
   echo "WordPress already installed"
 fi
 
+sleep 5
+
+# ==============================
+# FIX URL (DOUBLE GUARANTEE)
+# ==============================
+echo "Fixing URL..."
+
+sudo docker exec mysql mysql -u root -prootpassword wordpress -e "
+UPDATE wp_options 
+SET option_value='http://$PUBLIC_IP'
+WHERE option_name IN ('home','siteurl');
+" || true
+
+sudo docker exec bukabuku-wpcli wp option update home "http://$PUBLIC_IP" \
+  --path=/var/www/html --allow-root || true
+
+sudo docker exec bukabuku-wpcli wp option update siteurl "http://$PUBLIC_IP" \
+  --path=/var/www/html --allow-root || true
+
+# ==============================
+# FLUSH REWRITE
+# ==============================
+sudo docker exec bukabuku-wpcli wp rewrite flush \
+  --path=/var/www/html --allow-root || true
+
 # ==============================
 # ACTIVATE THEME
 # ==============================
-echo "Setting theme..."
-
-docker exec bukabuku-wpcli wp theme activate mytheme \
-  --path=/var/www/html \
-  --allow-root
-
-echo "Theme activated!"
+sudo docker exec bukabuku-wpcli wp theme activate mytheme \
+  --path=/var/www/html --allow-root || true
 
 # ==============================
-# FIX PERMISSION
+# CLEAN HTACCESS
 # ==============================
-chown -R ubuntu:www-data /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme
-
-find /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme -type d -exec chmod 755 {} \;
-find /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme -type f -exec chmod 644 {} \;
-
-echo "Permissions fixed!"
+sudo docker exec bukabuku-wordpress rm -f /var/www/html/.htaccess || true
 
 # ==============================
 # FINAL CHECK
 # ==============================
-echo "Final dist check:"
-ls /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist || echo "❌ dist missing"
+ls /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist || echo "dist missing"
 
 echo "=== SETUP COMPLETE ==="
