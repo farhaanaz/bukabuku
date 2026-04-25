@@ -54,8 +54,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
-            rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
+            sudo mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            sudo rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
 
       # ==============================
       # COPY BUILD TO EC2
