@@ -1,44 +1,15 @@
-name: Build Frontend
+- name: Build frontend
+  run: |
+    cd frontend
+    npm install
+    npm run build
 
-on: 
-  push:
-    branches:
-      - main
-      - v2-new-frontend
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      
-      - name: Install deps
-        run: |
-          cd frontend
-          npm install
-
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Debug dist content
-        run: |
-          echo "=== DIST CONTENT ==="
-          ls -la frontend/dist
-
-      - name: Commit dist to repo
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
-          git add frontend/dist
-          git commit -m "chore: update frontend build" || echo "No changes"
-          git push origin main
+- name: Copy frontend build to EC2
+  uses: appleboy/scp-action@v0.1.7
+  with:
+    host: ${{ secrets.HOST }}
+    username: ${{ secrets.USERNAME }}
+    key: ${{ secrets.SSH_PRIVATE_KEY }}
+    source: "frontend/dist/*"
+    target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+    overwrite: true
