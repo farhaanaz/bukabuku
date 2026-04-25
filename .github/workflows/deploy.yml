@@ -1,15 +1,99 @@
-- name: Build frontend
-  run: |
-    cd frontend
-    npm install
-    npm run build
+name: Deploy to EC2
 
-- name: Copy frontend build to EC2
-  uses: appleboy/scp-action@v0.1.7
-  with:
-    host: ${{ secrets.HOST }}
-    username: ${{ secrets.USERNAME }}
-    key: ${{ secrets.SSH_PRIVATE_KEY }}
-    source: "frontend/dist/*"
-    target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
-    overwrite: true
+on: 
+  push:
+    branches:
+      - main
+      - v2-new-frontend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ==============================
+      # CHECKOUT
+      # ==============================
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # ==============================
+      # SETUP NODE
+      # ==============================
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # ==============================
+      # BUILD FRONTEND
+      # ==============================
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      # ==============================
+      # DEBUG BUILD (OPTIONAL)
+      # ==============================
+      - name: Debug dist
+        run: |
+          echo "=== LOCAL DIST ==="
+          ls -la frontend/dist
+          echo "=== MANIFEST ==="
+          ls -la frontend/dist/.vite || true
+
+      # ==============================
+      # PREPARE SERVER FOLDER
+      # ==============================
+      - name: Prepare EC2 folder
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            rm -rf /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/*
+
+      # ==============================
+      # COPY BUILD TO EC2
+      # ==============================
+      - name: Copy frontend build to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "frontend/dist/*"
+          target: "/home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/"
+          overwrite: true
+
+      # ==============================
+      # VERIFY ON SERVER
+      # ==============================
+      - name: Verify on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "=== SERVER DIST ==="
+            ls -la /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist
+            echo "=== MANIFEST CHECK ==="
+            ls -la /home/ubuntu/bukabuku/docker/app/wp-content/themes/mytheme/dist/.vite || true
+
+      # ==============================
+      # RESTART DOCKER
+      # ==============================
+      - name: Restart docker
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/bukabuku/docker
+            docker compose restart wordpress nginx || true
